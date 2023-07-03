@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
 
 import os, time
+from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
-from selenium import webdriver
 from PIL import Image
 
 def capture_gslide(gslide_url):
@@ -22,7 +22,7 @@ def capture_gslide(gslide_url):
     print("Total Number of Slides: " + str(max_page))
     time.sleep(3)
 
-    # start the presentation
+    # start the presentation from first slide in full screen
     keys = Keys()
     actions = ActionChains(driver)
     actions.send_keys(keys.CONTROL + keys.SHIFT + keys.F5)
@@ -32,35 +32,34 @@ def capture_gslide(gslide_url):
 
     # move to next page until the end
     actions = ActionChains(driver)
-    counter = 1
+    slide_no = 0
     image_list = []
-    save_folder = "C:\\"+ title
-    os.mkdir(save_folder)
+    if not os.path.exists(title):
+        os.mkdir(title)
 
-    while counter <= int(max_page):
-        if counter > int(driver.current_url.rsplit('.',1)[-1][1:]):
-            counter -= 1 
-        fname = '{}.png'.format(str(counter).zfill(2))
-        pdfname = title + ".pdf"
-        save_dir = os.path.join(save_folder, fname)
-        save_pdf = os.path.join(save_folder, pdfname)
-        driver.save_screenshot(save_dir)
-        print('Page '+str(counter) + ' was captured.')
+    while slide_no < int(max_page):
 
-        im = Image.open(save_dir)
+        # take sreenshot and store it in title folder
+        png_file = '{}.png'.format(str(slide_no).zfill(2))
+        pdf_file = title + ".pdf"
+        save_png = os.path.join(title, png_file)
+        save_pdf = os.path.join(title, pdf_file)
+        driver.save_screenshot(save_png)
+        
+        print('Page '+str(slide_no) + ' was captured.')
+
+        im = Image.open(save_png)
         image = im.convert('RGB')
-        image_list.append(image)        
+        image_list.append(image)
 
-        if(counter == max_page):
-            image_list[0].save(save_pdf, save_all=True, append_images=image_list[1:])
-
-        counter = int(driver.current_url.rsplit('.',1)[-1][1:])+1
+        slide_no = int(driver.current_url.rsplit('.',1)[-1][1:])    
 
         actions.click()
         actions.perform()
 
-        time.sleep(2)       
+        time.sleep(2)  
 
+    image_list[0].save(save_pdf, save_all=True, append_images=image_list[1:]) 
 
     print('Done')
 

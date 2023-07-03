@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import os, time
+import os, time, shutil
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -59,7 +59,10 @@ def capture_gslide(gslide_url):
 
         time.sleep(2)  
 
-    image_list[0].save(save_pdf, save_all=True, append_images=image_list[1:]) 
+    image_list[0].save(save_pdf, save_all=True, append_images=image_list[1:])
+
+    shutil.move(save_pdf, pdf_file)
+    shutil.rmtree(title)
 
     print('Done')
 

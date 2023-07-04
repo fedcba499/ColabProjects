@@ -66,6 +66,10 @@ def capture_gslide(gslide_url):
 
     print('Done')
 
-url = input("Please enter Google Slides Link - ")
+if __name__ == "__main__":
+    
+    url = input("Please enter Google Slides Link - ")
 
-capture_gslide(url)
+    capture_gslide(url)
+
+

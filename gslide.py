@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 # This code runs on desktop with Microsoft Edge Installed
-# To pass multiple links, seperate links with SPACE
+# To pass multiple links, seperate links with SPACEs
 
 import os, time, shutil
 from selenium import webdriver
